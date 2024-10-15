@@ -16,7 +16,6 @@
     "firebase-admin": "^12.1.1",
     "firebase-tools": "^13.9.0",
     "framer-motion": "^11.11.9",
-    "fsevents": "^2.3.3",
     "react": "^18.2.0",
     "react-awesome-reveal": "^4.2.11",
     "react-dom": "^18.2.0",
@@ -25,6 +24,9 @@
     "react-toastify": "^10.0.5",
     "slick-carousel": "^1.8.1",
     "toastify": "^2.0.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
