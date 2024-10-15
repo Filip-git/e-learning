@@ -16,6 +16,7 @@ const CourseDetail = () => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchUserId = () => {
@@ -66,6 +67,8 @@ const CourseDetail = () => {
   };
 
   const submitAnswer = () => {
+    if (quizFinished) return;
+
     if (selectedAnswer === course.quiz[currentQuestion].correctAnswer) {
       setIsCorrect(true);
       setScore(score + 1);
@@ -73,16 +76,19 @@ const CourseDetail = () => {
       setIsCorrect(false);
     }
 
-    if (currentQuestion < course.quiz.length - 1) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (currentQuestion < course.quiz.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setSelectedAnswer(null);
         setIsCorrect(null);
-      }, 1500); // Delay to show if the answer was correct or not
-    } else {
-      setQuizFinished(true);
-      updateScore();
-    }
+      } else {
+        setQuizFinished(true);
+        if (!quizSubmitted) {
+          updateScore();
+          setQuizSubmitted(true);
+        }
+      }
+    }, 1500);
   };
 
   const updateScore = async () => {
@@ -96,7 +102,6 @@ const CourseDetail = () => {
       const userDocSnap = await getDoc(userDocRef);
 
       let userData = userDocSnap.exists() ? userDocSnap.data() : { completedCourses: [], finishedCourses: 0 };
-
       const completedCourses = userData.completedCourses || [];
       const existingCourse = completedCourses.find((course) => course.courseId === courseId);
 
@@ -154,8 +159,13 @@ const CourseDetail = () => {
                 key={index}
                 onClick={() => handleAnswerSelect(option)}
                 className={`block w-full px-4 py-2 border rounded-md transition duration-300 ${
-                  selectedAnswer === option ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-100 text-gray-700 border-gray-300'
+                  selectedAnswer === option
+                    ? option === course.quiz[currentQuestion].correctAnswer
+                      ? 'bg-green-600 text-white border-green-600'
+                      : 'bg-red-600 text-white border-red-600'
+                    : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
                 }`}
+                disabled={!!isCorrect || quizFinished}
               >
                 {option}
               </button>
@@ -164,7 +174,7 @@ const CourseDetail = () => {
           <button
             onClick={submitAnswer}
             className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
-            disabled={!selectedAnswer}
+            disabled={!selectedAnswer || quizFinished}
           >
             Submit Answer
           </button>
