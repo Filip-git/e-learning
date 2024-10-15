@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { addDoc, collection, doc, updateDoc, arrayUnion, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { firestore } from '../utils/firebase';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CourseForm = () => {
   const [title, setTitle] = useState('');
@@ -99,6 +101,7 @@ const CourseForm = () => {
       });
 
       console.log('Course added with ID: ', docRef.id);
+      toast.success('Course added successfully!');
 
       setTitle('');
       setDescription('');
@@ -107,11 +110,20 @@ const CourseForm = () => {
       setQuiz([{ question: '', options: ['', '', '', ''], correctAnswer: '' }]);
     } catch (e) {
       console.error('Error adding document: ', e);
+      toast.error('Failed to add course.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div>
+    <form onSubmit={handleSubmit} className="space-y-6 p-8 bg-white shadow-md rounded-md max-w-3xl mx-auto">
+      <h1 className="text-4xl font-extrabold text-center mb-6 bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">
+        Add New Course
+      </h1>
+      <button type="submit" className="w-full p-3 bg-green-600 text-white text-lg font-semibold rounded-md hover:bg-green-700">
+        Create Course
+      </button>
+
       <div>
         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
           Course Title
@@ -122,8 +134,10 @@ const CourseForm = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          placeholder="Enter course title"
         />
       </div>
+
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700">
           Course Description
@@ -133,8 +147,10 @@ const CourseForm = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+          placeholder="Enter course description"
         />
       </div>
+
       <div>
         <label htmlFor="category" className="block text-sm font-medium text-gray-700">
           Category
@@ -156,17 +172,18 @@ const CourseForm = () => {
       <div>
         <label className="block text-sm font-medium text-gray-700">Slides</label>
         {slides.map((slide, index) => (
-          <div key={index} className="mt-2 flex items-center">
+          <div key={index} className="mt-2 flex items-center space-x-2">
             <input
               type="text"
               value={slide}
               onChange={(e) => handleSlideChange(index, e.target.value)}
               className="p-2 border border-gray-300 rounded-md w-full"
+              placeholder={`Slide ${index + 1}`}
             />
             <button
               type="button"
               onClick={() => removeSlide(index)}
-              className="ml-2 p-2 bg-red-600 text-white rounded-md"
+              className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
             >
               Remove
             </button>
@@ -175,7 +192,7 @@ const CourseForm = () => {
         <button
           type="button"
           onClick={addSlide}
-          className="mt-2 p-2 bg-blue-600 text-white rounded-md"
+          className="mt-2 p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Add Slide
         </button>
@@ -190,10 +207,10 @@ const CourseForm = () => {
               value={q.question}
               onChange={(e) => handleQuestionChange(qIndex, e.target.value)}
               className="p-2 border border-gray-300 rounded-md w-full"
-              placeholder="Question"
+              placeholder="Enter quiz question"
             />
             {q.options.map((option, oIndex) => (
-              <div key={oIndex} className="flex items-center">
+              <div key={oIndex} className="flex items-center space-x-2">
                 <input
                   type="text"
                   value={option}
@@ -213,7 +230,7 @@ const CourseForm = () => {
             <button
               type="button"
               onClick={() => removeQuestion(qIndex)}
-              className="mt-2 p-2 bg-red-600 text-white rounded-md"
+              className="mt-2 p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
             >
               Remove Question
             </button>
@@ -222,16 +239,15 @@ const CourseForm = () => {
         <button
           type="button"
           onClick={addQuestion}
-          className="mt-2 p-2 bg-blue-600 text-white rounded-md"
+          className="mt-2 p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Add Question
         </button>
       </div>
+      </form>
 
-      <button type="submit" className="mt-4 p-2 bg-green-600 text-white rounded-md">
-        Create Course
-      </button>
-    </form>
+<ToastContainer />
+</div>
   );
 };
 

@@ -174,7 +174,7 @@ const AdminPanel = () => {
                 ))}
                 <button
                   onClick={handleAddQuizQuestion}
-                  className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+                  className="mb-4 mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                 >
                   Add Quiz Question
                 </button>
@@ -203,7 +203,7 @@ const AdminPanel = () => {
                 </button>
                 <button
                   onClick={() => handleDelete(course.id)}
-                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
+                  className="mt-4 ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
                 >
                   Delete
                 </button>
